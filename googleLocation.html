@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body  onload="javascript:initGeolocation()"><!-- onload="getLocation()" -->
+
+<p>Click the button to get your coordinates.</p>
+
+<p id="demo1"></p>
+<input id="latitude" type="hidden" name="latitude"></p>
+<input id="longitude" type="hidden" name="longitude"></p>
+
+<script>
+var x =document.getElementById("demo1");
+
+function initGeolocation() {
+if (navigator && navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(successCallback);
+} else {
+  console.log('Geolocation is not supported');
+}
+}
+function successCallback(position) {
+ var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+	var myObj = JSON.parse(this.responseText);
+	x.innerHTML = myObj.results[0].address_components[1].long_name+", "+myObj.results[0].address_components[2].long_name;
+  }
+};
+xmlhttp.open("GET", "https://maps.googleapis.com/maps/api/geocode/json?latlng="+position.coords.latitude+","+position.coords.longitude+"&key=AIzaSyB_0M_KseoZQIolRTCjLZuHkSX_6Rnegvk", true);
+xmlhttp.send();
+
+document.getElementById("latitude").value=position.coords.latitude;
+document.getElementById("longitude").value= position.coords.longitude;
+
+}
+	 
+</script>
+</body>
+</html>
